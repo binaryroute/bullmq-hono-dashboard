@@ -2,11 +2,9 @@ import { config as dotenvConfig } from "dotenv";
 import type { RedisOptions } from "ioredis";
 
 // Load environment variables
-if (process.env.NODE_ENV === "development") {
-	dotenvConfig({ path: ".env.local" });
-} else {
-	dotenvConfig();
-}
+// Try .env.local first (for local development), then fall back to .env
+dotenvConfig({ path: ".env.local" });
+dotenvConfig(); // This won't override existing values
 
 // Validate required environment variables
 const requiredEnv = ["REDIS_HOST", "DB_HOST", "DB_USER", "DB_PASSWORD"];

@@ -10,20 +10,17 @@ import {
 /**
  * Users table - stores user credentials and profile
  */
-export const users = mysqlTable(
-	"users",
-	{
-		id: bigint({ mode: "number" }).autoincrement().notNull().primaryKey(),
-		username: varchar({ length: 50 }).notNull().unique(),
-		passwordHash: varchar("password_hash", { length: 60 }).notNull(),
-		email: varchar({ length: 191 }).unique(),
-		firstName: varchar("first_name", { length: 50 }),
-		lastName: varchar("last_name", { length: 50 }),
-		activated: boolean("activated").notNull().default(true),
-		createdAt: timestamp("created_at").defaultNow(),
-		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
-	},
-);
+export const users = mysqlTable("users", {
+	id: bigint({ mode: "number" }).autoincrement().notNull().primaryKey(),
+	username: varchar({ length: 50 }).notNull().unique(),
+	passwordHash: varchar("password_hash", { length: 60 }).notNull(),
+	email: varchar({ length: 191 }).unique(),
+	firstName: varchar("first_name", { length: 50 }),
+	lastName: varchar("last_name", { length: 50 }),
+	activated: boolean("activated").notNull().default(true),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
+});
 
 /**
  * Roles table - defines available roles

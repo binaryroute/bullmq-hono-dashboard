@@ -33,7 +33,7 @@ A production-ready job queue dashboard built with BullMQ, Hono, and Bull Board. 
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/bullmq-hono-dashboard.git
+git clone https://github.com/binaryroute/bullmq-hono-dashboard.git
 cd bullmq-hono-dashboard
 pnpm install
 ```
@@ -81,27 +81,14 @@ pnpm db:seed    # Seed default roles
 For production, use migrations:
 ```bash
 pnpm db:migrate  # Run migrations
-pnpm db:seed     # Seed default roles
+pnpm db:seed     # Seed default roles and sample admin user
 ```
 
-### 5. Create Admin User
+The seed script creates a sample admin user:
+- **Username:** `admin`
+- **Password:** `admin123`
 
-```bash
-# Generate a bcrypt hash for your password
-node -e "require('bcrypt').hash('your-password', 10).then(console.log)"
-
-# Insert user into database
-mysql -u root -p job_dashboard -e "
-INSERT INTO users (username, password_hash, email, first_name, last_name)
-VALUES ('admin', '\$2b\$10\$...your-hash...', 'admin@example.com', 'Admin', 'User');
-
-INSERT INTO user_roles (user_id, role_id)
-SELECT u.id, r.id FROM users u, roles r
-WHERE u.username = 'admin' AND r.name = 'ROLE_ADMIN';
-"
-```
-
-### 6. Start the Server
+### 5. Start the Server
 
 ```bash
 # Development
