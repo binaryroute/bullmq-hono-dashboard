@@ -2,8 +2,8 @@ import { css, Style } from "hono/css";
 import type { FC } from "hono/jsx";
 
 interface LoginPageProps {
-  error?: string;
-  redirectTo?: string;
+	error?: string;
+	redirectTo?: string;
 }
 
 // Global styles using Hono's CSS helper
@@ -159,70 +159,70 @@ const footerStyles = css`
  * Server-side rendered login page
  */
 export const LoginPage: FC<LoginPageProps> = ({ error, redirectTo }) => {
-  return (
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Login - Job Dashboard</title>
-        <Style />
-      </head>
-      <body class={globalStyles}>
-        <div class={containerStyles}>
-          <div class={logoStyles}>
-            <h1>Job Dashboard</h1>
-            <p>Background Jobs Monitoring</p>
-          </div>
+	return (
+		<html lang="en">
+			<head>
+				<meta charset="UTF-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				<title>Login - Job Dashboard</title>
+				<Style />
+			</head>
+			<body class={globalStyles}>
+				<div class={containerStyles}>
+					<div class={logoStyles}>
+						<h1>Job Dashboard</h1>
+						<p>Background Jobs Monitoring</p>
+					</div>
 
-          {error && (
-            <div class={errorStyles}>
-              <span>{error}</span>
-            </div>
-          )}
+					{error && (
+						<div class={errorStyles}>
+							<span>{error}</span>
+						</div>
+					)}
 
-          <form method="post" action="/auth/login">
-            {redirectTo && (
-              <input type="hidden" name="redirectTo" value={redirectTo} />
-            )}
+					<form method="post" action="/auth/login">
+						{redirectTo && (
+							<input type="hidden" name="redirectTo" value={redirectTo} />
+						)}
 
-            <div class={formGroupStyles}>
-              <label class={labelStyles} for="username">
-                Username
-              </label>
-              <input
-                class={inputStyles}
-                type="text"
-                id="username"
-                name="username"
-                required
-                autocomplete="username"
-                placeholder="Enter your username"
-              />
-            </div>
+						<div class={formGroupStyles}>
+							<label class={labelStyles} for="username">
+								Username
+							</label>
+							<input
+								class={inputStyles}
+								type="text"
+								id="username"
+								name="username"
+								required
+								autocomplete="username"
+								placeholder="Enter your username"
+							/>
+						</div>
 
-            <div class={formGroupStyles}>
-              <label class={labelStyles} for="password">
-                Password
-              </label>
-              <input
-                class={inputStyles}
-                type="password"
-                id="password"
-                name="password"
-                required
-                autocomplete="current-password"
-                placeholder="Enter your password"
-              />
-            </div>
+						<div class={formGroupStyles}>
+							<label class={labelStyles} for="password">
+								Password
+							</label>
+							<input
+								class={inputStyles}
+								type="password"
+								id="password"
+								name="password"
+								required
+								autocomplete="current-password"
+								placeholder="Enter your password"
+							/>
+						</div>
 
-            <button class={buttonStyles} type="submit">
-              Sign In
-            </button>
-          </form>
+						<button class={buttonStyles} type="submit">
+							Sign In
+						</button>
+					</form>
 
-          <div class={footerStyles}>Secure authentication required</div>
-        </div>
-      </body>
-    </html>
-  );
+					<div class={footerStyles}>Secure authentication required</div>
+				</div>
+			</body>
+		</html>
+	);
 };

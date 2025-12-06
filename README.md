@@ -23,8 +23,10 @@ A production-ready job queue dashboard built with BullMQ, Hono, and Bull Board. 
 ## Prerequisites
 
 - Node.js 18+
-- Redis 6+
-- MySQL 8+
+- pnpm 8+
+- Docker & Docker Compose (for development)
+- Redis 6+ (or use Docker)
+- MySQL 8+ (or use Docker)
 
 ## Quick Start
 
@@ -33,48 +35,56 @@ A production-ready job queue dashboard built with BullMQ, Hono, and Bull Board. 
 ```bash
 git clone https://github.com/yourusername/bullmq-hono-dashboard.git
 cd bullmq-hono-dashboard
-npm install
+pnpm install
 ```
 
-### 2. Configure Environment
+### 2. Start Development Servers
 
+Start MySQL and Redis using Docker Compose:
+
+```bash
+pnpm docker:up
+```
+
+This starts:
+- **MySQL 8.0** on port 3306 (password: `password`, database: `job_dashboard`)
+- **Redis 7** on port 6379
+
+Other useful commands:
+```bash
+pnpm docker:down   # Stop and remove containers
+pnpm docker:logs   # View container logs
+```
+
+### 3. Configure Environment
+
+For local development (pre-configured for docker-compose):
+```bash
+cp .env.local.example .env.local
+```
+
+For production, copy and edit `.env.example`:
 ```bash
 cp .env.example .env
+# Edit .env with your production values
 ```
 
-Edit `.env` with your configuration:
+### 4. Setup Database
 
-```env
-# Server
-NODE_ENV=development
-PORT=3000
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# Database
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your-password
-DB_DATABASE=job_dashboard
-
-# Authentication
-SESSION_SECRET=your-super-secret-key-min-32-chars
-
-# Dashboard
-DASHBOARD_BASE_PATH=/admin/queues
-```
-
-### 3. Setup Database
-
-Run the migration to create the required tables:
+Run database migrations and seed default roles:
 
 ```bash
-mysql -u root -p job_dashboard < migrations/001_initial.sql
+pnpm db:push    # Push schema to database (development)
+pnpm db:seed    # Seed default roles
 ```
 
-### 4. Create Admin User
+For production, use migrations:
+```bash
+pnpm db:migrate  # Run migrations
+pnpm db:seed     # Seed default roles
+```
+
+### 5. Create Admin User
 
 ```bash
 # Generate a bcrypt hash for your password
@@ -91,15 +101,15 @@ WHERE u.username = 'admin' AND r.name = 'ROLE_ADMIN';
 "
 ```
 
-### 5. Start the Server
+### 6. Start the Server
 
 ```bash
 # Development
-npm run dev
+pnpm dev
 
 # Production
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
 Visit `http://localhost:3000/auth/login` to access the dashboard.
@@ -118,7 +128,8 @@ src/
 │   └── index.ts          # Bull Board configuration
 ├── db/                   # Database layer
 │   ├── index.ts          # Connection setup
-│   └── schema.ts         # Drizzle schema
+│   ├── schema.ts         # Drizzle schema
+│   └── seed.ts           # Database seeding script
 ├── queues/               # Queue management
 │   ├── config.ts         # Redis configuration
 │   ├── QueueManager.ts   # Queue lifecycle management
@@ -153,6 +164,25 @@ src/
 | Endpoint | Description |
 |----------|-------------|
 | `GET /admin/queues` | Bull Board dashboard (protected) |
+
+## Database Migrations
+
+This project uses [Drizzle ORM](https://orm.drizzle.team/) for database migrations.
+
+| Script | Description |
+|--------|-------------|
+| `pnpm db:generate` | Generate migration from schema changes |
+| `pnpm db:migrate` | Run pending migrations |
+| `pnpm db:push` | Push schema directly (development) |
+| `pnpm db:studio` | Open Drizzle Studio GUI |
+| `pnpm db:seed` | Seed default roles |
+
+### Creating a New Migration
+
+1. Modify the schema in `src/db/schema.ts`
+2. Generate migration: `pnpm db:generate`
+3. Review generated SQL in `drizzle/` folder
+4. Apply migration: `pnpm db:migrate`
 
 ## Adding Your Queues
 
